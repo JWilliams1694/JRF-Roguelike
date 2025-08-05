@@ -1,0 +1,4 @@
+repository "JRF Roguelike 2025-08-05_17-58-04/JRF Roguelike@2474587175675@cloud"
+  path "/"
+    br "/main"
+    co "/main"
