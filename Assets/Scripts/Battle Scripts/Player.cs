@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class Player : Character
 {
@@ -17,6 +16,7 @@ public class Player : Character
         {
             // Check if the enemy exists in the scene before performing an attack
             basicAttack(GameObject.Find("Enemy").GetComponent<Character>()); // Perform a basic attack on the enemy
+            Debug.Log("attack");
         }
     }
 }
