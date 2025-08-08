@@ -6,6 +6,7 @@ public class Player : Character
     void Start()
     {
         curr_health = stats.max_health; // Initialize current health to max health
+        curr_energy = stats.energy;
     }
 
 
