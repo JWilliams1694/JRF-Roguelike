@@ -1,22 +1,52 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-public class Player : Character
+public class Player : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [SerializeField] private PlayerData playerData;
+
+    private int hp;
+    private int energy;
+    private SkillTree skillTree;
+
     void Start()
     {
-        curr_health = stats.max_health; // Initialize current health to max health
+        hp = playerData.maxHp;
+        energy = playerData.startingEnergy;
+        skillTree = new SkillTree();
     }
 
-
-    // Update is called once per frame
-    void Update()
+    public void ShowStats()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            // Check if the enemy exists in the scene before performing an attack
-            basicAttack(GameObject.Find("Enemy").GetComponent<Character>()); // Perform a basic attack on the enemy
-        }
+        Debug.Log($" | HP: {hp}/{playerData.maxHp} | Energy: {energy}");
+    }
+
+    public void LearnSkill()
+    {
+        skillTree.ChooseSkill();
+    }
+
+    public void TakeDamage(int dmg)
+    {
+        hp -= dmg;
+        if (hp < 0) hp = 0;
+        Debug.Log($"You took {dmg} damage, HP now {hp}/{playerData.maxHp}");
+    }
+
+    public bool IsAlive()
+    {
+        return hp > 0;
+    }
+
+    public int GetDamageOutput()
+    {
+        return 10;
+    }
+
+    public int GetHP() { return hp; }
+    public int GetMaxHP() { return playerData.maxHp; }
+
+    public void AttackMenu()
+    {
+
     }
 }

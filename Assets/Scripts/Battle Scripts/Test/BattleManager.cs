@@ -1,17 +1,39 @@
+using System.Collections;
 using UnityEngine;
 
-public class BattleManager : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
-    private Player player;
-    private Enemy enemy;
+    public Player player;// Assign in Inspector
+    public CourseMap selectedMap; // Assign in Inspector
+    private int currentFloor = 1;
 
-    public BattleManager(Player player, Enemy enemy)
+    void Start()
     {
-        this.player = player;
-        this.enemy = enemy;
+        player = GetComponent<Player>();
+        StartCoroutine(GameLoop());
     }
 
-    public void StartBattle()
+    private IEnumerator GameLoop()
+    {
+        while (player.IsAlive() && currentFloor <= selectedMap.totalFloors)
+        {
+            Debug.Log($"\n--- Course: {selectedMap.courseName} | Floor {currentFloor} ---");
+
+            Enemy enemy = selectedMap.GenerateEnemy();
+
+            yield return StartCoroutine(StartBattle(player, enemy));
+
+            if (!player.IsAlive())
+                break;
+
+            currentFloor++;
+            yield return new WaitForSeconds(1f);
+        }
+
+        Debug.Log(player.IsAlive() ? "\nYou passed the semester!" : "\nYou dropped out...");
+    }
+
+    private IEnumerator StartBattle(Player player, Enemy enemy)
     {
         Debug.Log($"You encounter a {enemy.GetName()} from {enemy.GetCourse()} class!");
 
@@ -20,9 +42,10 @@ public class BattleManager : MonoBehaviour
             Debug.Log($"\nPlayer HP: {player.GetHP()}/{player.GetMaxHP()} | Enemy HP: {enemy.GetHP()}/{enemy.GetMaxHP()}");
 
             Debug.Log("\n--- Player Turn ---");
-            player.AttackMenu();
+            player.AttackMenu(); // Display options (text/UI)
 
-            int choice = GetPlayerChoice();
+            int choice = GetPlayerChoice();  // Simulate input
+            yield return new WaitForSeconds(1f);  // simulate wait
 
             if (choice == 1)
             {
@@ -42,8 +65,10 @@ public class BattleManager : MonoBehaviour
             if (!enemy.IsAlive())
             {
                 Debug.Log($"You defeated the {enemy.GetName()}!");
-                break;
+                yield break;
             }
+
+            yield return new WaitForSeconds(1f);
 
             Debug.Log("\n--- Enemy Turn ---");
             int enemyDmg = enemy.GetAttack();
@@ -53,15 +78,16 @@ public class BattleManager : MonoBehaviour
             if (!player.IsAlive())
             {
                 Debug.Log("You were defeated...");
-                break;
+                yield break;
             }
+
+            yield return new WaitForSeconds(1f);
         }
     }
 
     private int GetPlayerChoice()
     {
-        // For Unity, replace this with your UI input system
-        // For now, just simulate choice 1 for testing
-        return 1;
+        // Replace with real UI input system
+        return 1; // always choose basic attack for now
     }
 }

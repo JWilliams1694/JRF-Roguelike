@@ -2,33 +2,27 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    private string name;
-    private string course;
-    private int hp;
-    private int maxHp;
-    private int attack;
+    public EnemyData data;
+    private int currentHP;
 
-    public Enemy(string name, string course, int hp, int maxHp, int attack)
+    public void Initialize(EnemyData enemyData)
     {
-        this.name = name;
-        this.course = course;
-        this.hp = hp;
-        this.maxHp = maxHp;
-        this.attack = attack;
+        data = enemyData;
+        currentHP = data.maxHP;
+        gameObject.name = data.enemyName;
     }
-
-    public string GetName() => name;
-    public string GetCourse() => course;
-    public int GetHP() => hp;
-    public int GetMaxHP() => maxHp;
-    public int GetAttack() => attack;
 
     public void TakeDamage(int dmg)
     {
-        hp -= dmg;
-        if (hp < 0) hp = 0;
-        Debug.Log($"{name} took {dmg} damage, HP now {hp}/{maxHp}");
+        currentHP -= dmg;
+        if (currentHP < 0) currentHP = 0;
     }
 
-    public bool IsAlive() => hp > 0;
+    public bool IsAlive() => currentHP > 0;
+
+    public string GetName() => data.enemyName;
+    public string GetCourse() => data.courseName;
+    public int GetHP() => currentHP;
+    public int GetMaxHP() => data.maxHP;
+    public int GetAttack() => data.attackPower;
 }

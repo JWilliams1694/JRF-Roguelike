@@ -3,50 +3,31 @@ using UnityEngine;
 
 public class Map : MonoBehaviour
 {
-    private string courseName;
+    public List<EnemyData> enemyTypes; // Assign in inspector
+    public Transform spawnPoint;
+
+    private string courseName = "Math"; // example
     private int floorLevel;
-    private int totalFloors;
-    private List<Enemy> enemyPool;
+    private int totalFloors = 5;
 
-    public Map(string courseName, int totalFloors)
+    private void Start()
     {
-        this.courseName = courseName;
-        this.totalFloors = totalFloors;
-        this.floorLevel = 1;
-        enemyPool = new List<Enemy>();
-
-        InitializeEnemyPool();
+        floorLevel = 1;
     }
 
-    private void InitializeEnemyPool()
+    public Enemy SpawnEnemy()
     {
-        if (courseName == "Math")
-        {
-            enemyPool.Add(new Enemy("Worksheet", courseName, 15, 15, 4));
-            enemyPool.Add(new Enemy("Pop Quiz", courseName, 20, 20, 5));
-            enemyPool.Add(new Enemy("Midterm", courseName, 30, 30, 6));
-            enemyPool.Add(new Enemy("Final Exam", courseName, 50, 50, 8));
-        }
-        else if (courseName == "History")
-        {
-            enemyPool.Add(new Enemy("Essay", courseName, 18, 18, 5));
-            enemyPool.Add(new Enemy("Reading Quiz", courseName, 22, 22, 6));
-            enemyPool.Add(new Enemy("Group Presentation", courseName, 35, 35, 7));
-            enemyPool.Add(new Enemy("Final Exam", courseName, 50, 50, 9));
-        }
-        else
-        {
-            enemyPool.Add(new Enemy("Generic Assignment", courseName, 10, 10, 3));
-            enemyPool.Add(new Enemy("Lecture Notes", courseName, 15, 15, 4));
-            enemyPool.Add(new Enemy("Final Exam", courseName, 50, 50, 8));
-        }
-    }
+        // Filter enemyTypes by courseName
+        var validEnemies = enemyTypes.FindAll(e => e.courseName == courseName);
+        if (validEnemies.Count == 0) return null;
 
-    public Enemy GenerateEnemy()
-    {
-        int index = Random.Range(0, enemyPool.Count);
-        Enemy baseEnemy = enemyPool[index];
-        return new Enemy(baseEnemy.GetName(), baseEnemy.GetCourse(), baseEnemy.GetHP(), baseEnemy.GetMaxHP(), baseEnemy.GetAttack());
+        EnemyData selectedData = validEnemies[Random.Range(0, validEnemies.Count)];
+
+        GameObject enemyObj = Instantiate(selectedData.enemyPrefab, spawnPoint.position, Quaternion.identity);
+        Enemy enemyComponent = enemyObj.GetComponent<Enemy>();
+        enemyComponent.Initialize(selectedData);
+
+        return enemyComponent;
     }
 
     public bool AdvanceFloor()
@@ -59,23 +40,7 @@ public class Map : MonoBehaviour
         return false;
     }
 
-    public bool IsComplete()
-    {
-        return floorLevel > totalFloors;
-    }
-
-    public string GetCourseName()
-    {
-        return courseName;
-    }
-
-    public int GetCurrentFloor()
-    {
-        return floorLevel;
-    }
-
-    public int GetTotalFloors()
-    {
-        return totalFloors;
-    }
+    public bool IsComplete() => floorLevel > totalFloors;
+    public int GetCurrentFloor() => floorLevel;
+    public int GetTotalFloors() => totalFloors;
 }
