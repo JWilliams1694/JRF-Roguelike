@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BattleManager
+public class BattleManager : MonoBehaviour
 {
     private Player player;
     private Enemy enemy;
@@ -37,14 +37,6 @@ public class BattleManager
                 Debug.Log($"You dealt {dmg} damage to {enemy.GetName()}!");
                 player.TakeDamage(10);
                 Debug.Log("You took 10 damage from your all-nighter!");
-            }
-            else if (choice == 3)
-            {
-                player.UseItem();
-            }
-            else
-            {
-                Debug.Log("Invalid choice. You lose your turn.");
             }
 
             if (!enemy.IsAlive())

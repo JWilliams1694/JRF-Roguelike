@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SkillTree
+public class SkillTree : MonoBehaviour
 {
     private List<string> skills;
 
